@@ -15,11 +15,14 @@ namespace Thread1
             var meth1 = new IntRoot(method1.intRootMethod);
             var meth2 = new IntRoot(method2.intRootMethod);
 
-            ParameterizedThreadStart intRoots2 = new(meth2);
-            ParameterizedThreadStart intRoots1 = new(meth1);
+            //ParameterizedThreadStart intRoots2 = new(meth2);
+            //ParameterizedThreadStart intRoots1 = new(meth1);
 
-            Thread thread1 = new Thread(intRoots1);
-            Thread thread2 = new Thread(intRoots2);
+            //Thread thread1 = new Thread(intRoots1);
+           // Thread thread2 = new Thread(intRoots2);
+
+            Thread thread1 = new Thread(meth1);
+            Thread thread2 = new Thread(meth2);
 
             thread1.Start();
             thread2.Start();
