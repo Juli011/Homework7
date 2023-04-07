@@ -1,36 +1,66 @@
 ﻿
-using static Thread1.Method;
-
 namespace Thread1
 {
+    class Params
+    {
+        public int From { get; set; }
+        public int To { get; set; }
+    }
     class Program
     {
 
         static void Main()
         {
-            
-            Method method1 = new Method(100000,0,50000);
-            Method method2 = new Method(100000, 50000, 100000);
-            
-            var meth1 = new IntRoot(method1.intRootMethod);
-            var meth2 = new IntRoot(method2.intRootMethod);
+            int[] array = new int[100000];
+            for (int i = 0; i<100000; i++)
+            {
+                array[i] = i;
+            }
+            List<int> result = new List<int>();
 
-            //ParameterizedThreadStart intRoots2 = new(meth2);
-            //ParameterizedThreadStart intRoots1 = new(meth1);
+            var t1 = new Thread(p =>
+            {
+                if (p==null) return;
 
-            //Thread thread1 = new Thread(intRoots1);
-           // Thread thread2 = new Thread(intRoots2);
+                var par = (Params)p;
+                intRootMeth(par, array, result);
+            });
+            var t2 = new Thread(p =>
+            {
+                if (p==null) return;
 
-            Thread thread1 = new Thread(meth1);
-            Thread thread2 = new Thread(meth2);
+                var par = (Params)p;
+                intRootMeth(par, array, result);
+            });
 
-            thread1.Start();
-            thread2.Start();
+            var par1 = new Params()
+            {
+                From=0,
+                To = 50000
+            };
+            var par2 = new Params()
+            {
+                From=50000,
+                To = 100000
+            };
+            static void intRootMeth(Params p, int[] array, List<int> result)
+            {
+                for (int i = p.From; i<p.To; i++)
+                {
+                    if (Math.Sqrt(array[i])%1==0)
+                    {
+                        result.Add(array[i]);
+                    }
 
-            thread1.Join();
-            thread2.Join(); 
+                }
+            }
+            t1.Start(par1);
+            t2.Start(par2);
 
-            Console.WriteLine("Числа, що мають цілий корінь - "+string.Join(",", Method.intRoots));
+            t1.Join();
+            t2.Join();
+
+            Console.WriteLine("Числа, що мають цілий корінь - "+string.Join(",", result));
 
         }
     }
